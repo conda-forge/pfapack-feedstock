@@ -14,12 +14,11 @@ OBJECTS = slasktrd.o slasktrf.o sskbpf10.o sskbpfa.o sskbtrd.o \
 	skpfa.o skpf10.o skbpfa.o skbpf10.o sktrd.o sktd2.o \
 	sktrf.o sktf2.o skbtrd.o
 
-FORT = gfortran
-FFLAGS = -O3 -fimplicit-none -fPIC
+FFLAGS = $(FFLAGS) -O3 -fimplicit-none -fPIC
 
 all: $(OBJECTS)
 	$(AR) rvu libpfapack.a $(OBJECTS)
-	gfortran -shared -fPIC -llapack -lblas -L${PREFIX}/lib -o libpfapack.so $(OBJECTS)
+	$(FC) -shared -fPIC -llapack -lblas -L${PREFIX}/lib -o libpfapack.so $(OBJECTS)
 
 clean:
 	rm -f *.o
@@ -30,7 +29,7 @@ clean:
 .SUFFIXES: .o .f .f90
 
 .f90.o:
-	$(FORT) $(FFLAGS) -c $< -o $@
+	$(FC) $(FFLAGS) -c $< -o $@
 
 .f.o:
-	$(FORT) $(FFLAGS) -c $< -o $@
+	$(FC) $(FFLAGS) -c $< -o $@
