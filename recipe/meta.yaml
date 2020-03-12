@@ -15,16 +15,17 @@ source:
 
 build:
   number: 1
-  skip: True  # [py<36 or win]
+  skip: True  # [py<36]
 
 requirements:
   build:
-    - {{ compiler('c') }}
-    - {{ compiler('fortran') }}
+    - {{ compiler('c') }}  # [not win]
+    - {{ compiler('fortran') }}  # [not win]
   host:
     - python
-    - liblapack
-    - libblas
+    - liblapack  # [not win]
+    - libopenblas  # [not win]
+    - libblas  # [not win]
     - pip
   run:
     - python
