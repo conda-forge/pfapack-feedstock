@@ -39,7 +39,7 @@ about:
   home: https://github.com/basnijholt/pfapack
   license: MIT
   license_family: MIT
-  license_file: LICENSE
+  license_file: python/LICENSE
   summary: 'Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices'
   description: |
     Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.
