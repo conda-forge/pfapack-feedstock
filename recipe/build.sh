@@ -3,8 +3,8 @@
 mkdir -p "${PREFIX}/lib"
 mkdir -p "${PREFIX}/include"
 
-cp ${RECIPE_DIR}/Makefile.C pfapack/c_interface/Makefile
-cp ${RECIPE_DIR}/Makefile.FORTRAN pfapack/fortran/Makefile
+cp ${RECIPE_DIR}/Makefile.C pfapack/c_interface/makefile
+cp ${RECIPE_DIR}/Makefile.FORTRAN pfapack/fortran/makefile
 
 # FORTRAN
 
