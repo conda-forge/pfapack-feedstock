@@ -1,5 +1,5 @@
 {% set name = "pfapack" %}
-{% set version = "0.2.0" %}
+{% set version = "0.2.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: caac6e8b6d28eda49cc5e58dc517c95efff17a6a9b1839540679d5b7ee1e7ff4
+    sha256: 6c388f0a65a96fd3a5d7e593b822081a0bf5454a791f24d0e3f4bfb80275faa1
     folder: python
   - url: https://michaelwimmer.org/pfapack.tgz
     sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07
