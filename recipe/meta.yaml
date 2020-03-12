@@ -22,12 +22,12 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('fortran') }}
   host:
-    - python >=3.6
+    - python
     - liblapack
     - libblas
     - pip
   run:
-    - python >=3.6
+    - python
     - scipy
     - numpy
 
