@@ -7,7 +7,7 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: c415dc8723ab9b5d96cda21b0fa115a36d6d1e758fc2c4943c2952b958dca81a
+    sha256: caac6e8b6d28eda49cc5e58dc517c95efff17a6a9b1839540679d5b7ee1e7ff4
     folder: python
   - url: https://michaelwimmer.org/pfapack.tgz
     sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07
