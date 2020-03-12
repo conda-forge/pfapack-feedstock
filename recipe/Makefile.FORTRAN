@@ -18,7 +18,7 @@ FFLAGS += -fimplicit-none
 
 all: $(OBJECTS)
 	$(AR) rvu libpfapack.a $(OBJECTS)
-	$(FC) -shared -llapack -lblas $(FFLAGS) -L${PREFIX}/lib -o libpfapack.so $(OBJECTS)
+	$(FC) -shared -llapack -lblas $(FFLAGS) -L${PREFIX}/lib -Wl,-rpath,${PREFIX}/lib -o libpfapack.so $(OBJECTS)
 
 clean:
 	rm -f *.o
