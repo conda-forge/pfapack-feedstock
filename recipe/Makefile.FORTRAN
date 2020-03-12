@@ -14,11 +14,11 @@ OBJECTS = slasktrd.o slasktrf.o sskbpf10.o sskbpfa.o sskbtrd.o \
 	skpfa.o skpf10.o skbpfa.o skbpf10.o sktrd.o sktd2.o \
 	sktrf.o sktf2.o skbtrd.o
 
-FFLAGS += -O3 -fimplicit-none -fPIC
+FFLAGS += -fimplicit-none
 
 all: $(OBJECTS)
 	$(AR) rvu libpfapack.a $(OBJECTS)
-	$(FC) -shared -fPIC -llapack -lblas -L${PREFIX}/lib -o libpfapack.so $(OBJECTS)
+	$(FC) -shared -llapack -lblas $(FFLAGS) -L${PREFIX}/lib -o libpfapack.so $(OBJECTS)
 
 clean:
 	rm -f *.o
