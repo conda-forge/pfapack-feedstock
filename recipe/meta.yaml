@@ -1,25 +1,34 @@
 {% set name = "pfapack" %}
-{% set version = "0.1.1" %}
+{% set version = "0.2.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: c415dc8723ab9b5d96cda21b0fa115a36d6d1e758fc2c4943c2952b958dca81a
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 6c388f0a65a96fd3a5d7e593b822081a0bf5454a791f24d0e3f4bfb80275faa1
+    folder: python
+  - url: https://michaelwimmer.org/pfapack.tgz
+    sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07
+    folder: pfapack
 
 build:
   number: 0
-  noarch: python
-  script: "{{ PYTHON }} -m pip install . -vv"
+  skip: True  # [py<36]
 
 requirements:
+  build:
+    - {{ compiler('c') }}  # [not win]
+    - {{ compiler('fortran') }}  # [not win]
   host:
-    - python >=3.6
+    - python
+    - liblapack  # [not win]
+    - libopenblas  # [not win]
+    - libblas  # [not win]
     - pip
   run:
-    - python >=3.6
+    - python
     - scipy
     - numpy
 
@@ -31,7 +40,7 @@ about:
   home: https://github.com/basnijholt/pfapack
   license: MIT
   license_family: MIT
-  license_file: LICENSE
+  license_file: python/LICENSE
   summary: 'Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices'
   description: |
     Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.
