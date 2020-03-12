@@ -6,17 +6,25 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: c415dc8723ab9b5d96cda21b0fa115a36d6d1e758fc2c4943c2952b958dca81a
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: c415dc8723ab9b5d96cda21b0fa115a36d6d1e758fc2c4943c2952b958dca81a
+    folder: python
+  - url: https://michaelwimmer.org/pfapack.tgz
+    sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07
+    folder: pfapack
 
 build:
   number: 0
   noarch: python
-  script: "{{ PYTHON }} -m pip install . -vv"
 
 requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('fortran') }}
   host:
     - python >=3.6
+    - liblapack
+    - libblas
     - pip
   run:
     - python >=3.6
