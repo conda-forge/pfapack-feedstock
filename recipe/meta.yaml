@@ -1,5 +1,5 @@
 {% set name = "pfapack" %}
-{% set version = "0.2.1" %}
+{% set version = "0.3.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,15 +7,15 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: 6c388f0a65a96fd3a5d7e593b822081a0bf5454a791f24d0e3f4bfb80275faa1
+    sha256: 7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51
     folder: python
   - url: https://michaelwimmer.org/pfapack.tgz
     sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07
     folder: pfapack
 
 build:
-  number: 2
-  skip: True  # [py<36]
+  number: 0
+  skip: true  # [py<36]
 
 requirements:
   build:
@@ -41,7 +41,7 @@ about:
   license: MIT
   license_family: MIT
   license_file: python/LICENSE
-  summary: 'Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices'
+  summary: Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices
   description: |
     Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.
     Both computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix
