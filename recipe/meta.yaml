@@ -29,6 +29,7 @@ requirements:
     - pip
   run:
     - python
+    - setuptools
     - scipy
     - numpy
 
