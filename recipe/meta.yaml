@@ -14,7 +14,7 @@ source:
     folder: pfapack
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<37]
 
 requirements:
