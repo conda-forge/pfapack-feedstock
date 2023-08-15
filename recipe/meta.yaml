@@ -14,13 +14,14 @@ source:
     folder: pfapack
 
 build:
-  number: 1
+  number: 2
   skip: true  # [py<37]
 
 requirements:
   build:
     - {{ compiler('c') }}  # [not win]
     - {{ compiler('fortran') }}  # [not win]
+    - make  # [linux]
   host:
     - python
     - liblapack  # [not win]
