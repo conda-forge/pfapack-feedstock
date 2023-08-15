@@ -21,6 +21,7 @@ requirements:
   build:
     - {{ compiler('c') }}  # [not win]
     - {{ compiler('fortran') }}  # [not win]
+    - make  # [linux]
   host:
     - python
     - liblapack  # [not win]
