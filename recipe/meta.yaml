@@ -1,25 +1,26 @@
 {% set name = "pfapack" %}
-{% set version = "0.3.1" %}
+{% set version = "1.0.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    sha256: 7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51
+  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 8d4a92c3e2ebfe1bc1a40913c5568fec78877402c01f4bc88df5726fbc7298ae
     folder: python
   - url: https://michaelwimmer.org/pfapack.tgz
     sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07
     folder: pfapack
 
 build:
-  number: 4
+  number: 0
   skip: true  # [py<37]
 
 requirements:
   build:
     - {{ compiler('c') }}  # [not win]
+    - {{ stdlib("c") }}    # [not win]
     - {{ compiler('fortran') }}  # [not win]
     - make  # [linux]
   host:
