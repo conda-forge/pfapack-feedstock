@@ -22,7 +22,6 @@ or based on unitary transformations, using block Householder transformations and
 that are applicable to dense and banded matrices, respectively. We also give a complete and fully
 optimized implementation of these algorithms in Python.
 
-
 Current build status
 ====================
 
