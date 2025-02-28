@@ -1,33 +1,42 @@
-{% set name = "pfapack" %}
-{% set version = "0.3.1" %}
+schema_version: 1
+
+context:
+  name: pfapack
+  version: 0.3.1
 
 package:
-  name: {{ name|lower }}
-  version: {{ version }}
+  name: ${{ name|lower }}
+  version: ${{ version }}
 
 source:
-  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  - url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
     sha256: 7f2efe474f35f5c51e9c00789c0f0aeaa0d4495e75a3a23fc023914df4f95a51
-    folder: python
+    target_directory: python
   - url: https://michaelwimmer.org/pfapack.tgz
     sha256: b68fc35dda23ee24c358641b1a92ef701c4ffa0b3f0b0808b24e68afeb58ef07
-    folder: pfapack
+    target_directory: pfapack
 
 build:
-  number: 5
-  skip: true  # [py<37]
+  number: 6
+  skip: match(python, "<3.7")
 
 requirements:
   build:
-    - {{ compiler('c') }}  # [not win]
-    - {{ stdlib("c") }}    # [not win]
-    - {{ compiler("fortran") }}
-    - make  # [linux]
+    - if: not win
+      then: ${{ compiler('c') }}
+    - if: not win
+      then: ${{ stdlib("c") }}
+    - ${{ compiler("fortran") }}
+    - if: linux
+      then: make
   host:
     - python
-    - liblapack  # [not win]
-    - libopenblas  # [not win]
-    - libblas  # [not win]
+    - if: not win
+      then: liblapack
+    - if: not win
+      then: libopenblas
+    - if: not win
+      then: libblas
     - pip
   run:
     - python
@@ -35,14 +44,13 @@ requirements:
     - scipy
     - numpy
 
-test:
-  imports:
-    - pfapack
+tests:
+  - python:
+      imports:
+        - pfapack
 
 about:
-  home: https://github.com/basnijholt/pfapack
   license: MIT
-  license_family: MIT
   license_file: python/LICENSE
   summary: Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices
   description: |
@@ -55,8 +63,9 @@ about:
     that are applicable to dense and banded matrices, respectively. We also give a complete and fully
     optimized implementation of these algorithms in Python.
 
-  doc_url: https://pfapack.readthedocs.io/
-  dev_url: https://github.com/basnijholt/pfapack
+  homepage: https://github.com/basnijholt/pfapack
+  repository: https://github.com/basnijholt/pfapack
+  documentation: https://pfapack.readthedocs.io/
 
 extra:
   recipe-maintainers:
