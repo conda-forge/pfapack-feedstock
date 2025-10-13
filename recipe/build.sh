@@ -1,27 +1,7 @@
 #!/bin/bash
+set -euxo pipefail
 
-mkdir -p "${PREFIX}/lib"
-mkdir -p "${PREFIX}/include"
+export PIP_NO_BUILD_ISOLATION=1
+export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
 
-cp ${RECIPE_DIR}/Makefile.C pfapack/c_interface/makefile
-cp ${RECIPE_DIR}/Makefile.FORTRAN pfapack/fortran/makefile
-
-# FORTRAN
-
-cd pfapack/fortran
-make clean all
-cp *.o *.mod libpfapack.a libpfapack.so ${PREFIX}/lib
-cd ../..
-
-# C
-
-cd pfapack/c_interface
-make clean all
-cp *.o libcpfapack.a libcpfapack.so ${PREFIX}/lib
-cp *.h ${PREFIX}/lib
-cd ../..
-
-# Python
-
-cd python
-$PYTHON -m pip install . -vv
+${PYTHON} -m pip install . --no-deps --no-build-isolation -vv
