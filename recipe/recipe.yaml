@@ -11,6 +11,9 @@ package:
 source:
   - url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
     sha256: 43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39
+    patches:
+      - if: win
+        then: 0001-patch-compatibility-with-meson.patch
 
 build:
   number: 0
