@@ -25,8 +25,7 @@ requirements:
     - if: not win
       then: ${{ stdlib("c") }}
     - ${{ compiler("fortran") }}
-    - if: not win
-      then: pkg-config
+    - pkg-config
   host:
     - python
     - pip
@@ -34,12 +33,9 @@ requirements:
     - meson-python
     - ninja
     - setuptools-scm
-    - if: not win
-      then: liblapack
-    - if: not win
-      then: libopenblas
-    - if: not win
-      then: libblas
+    - liblapack
+    - libopenblas
+    - libblas
   run:
     - python
     - scipy
