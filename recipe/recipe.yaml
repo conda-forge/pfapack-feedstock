@@ -41,7 +41,7 @@ requirements:
     - if: not win
       then: libblas
   run:
-    - python >=3.10
+    - python
     - scipy
     - numpy
 
