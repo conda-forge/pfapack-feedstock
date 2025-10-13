@@ -1,0 +1,25 @@
+From d9304ffc929be5b784ed8081ce2ae1836dd00118 Mon Sep 17 00:00:00 2001
+From: Anton Akhmerov <anton.akhmerov@gmail.com>
+Date: Mon, 13 Oct 2025 13:19:16 +0200
+Subject: [PATCH] patch compatibility with meson
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index bcf26b2..0b25928 100644
+--- a/meson.build
++++ b/meson.build
+@@ -4,7 +4,7 @@ project('pfapack',
+   default_options: [
+     'buildtype=release',
+     'c_std=c99',
+-    'fortran_std=legacy',
++    'fortran_std=none',
+   ],
+   version: run_command('pfapack/_version.py', check: true).stdout().strip(),
+ )
+-- 
+2.51.0
+
