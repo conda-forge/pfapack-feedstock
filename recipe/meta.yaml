@@ -29,6 +29,7 @@ requirements:
     - libopenblas  # [not win]
     - libblas  # [not win]
     - pip
+    - setuptools
   run:
     - python
     - setuptools
