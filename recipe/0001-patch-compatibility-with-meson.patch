@@ -1,15 +1,5 @@
-From d9304ffc929be5b784ed8081ce2ae1836dd00118 Mon Sep 17 00:00:00 2001
-From: Anton Akhmerov <anton.akhmerov@gmail.com>
-Date: Mon, 13 Oct 2025 13:19:16 +0200
-Subject: [PATCH] Improve Meson compatibility on conda-forge
-
----
- meson.build   | 44 ++++++++++++++++++++++++++++++++++----------
- meson.options |  6 ++++++
- 2 files changed, 40 insertions(+), 10 deletions(-)
-
 diff --git a/meson.build b/meson.build
-index bcf26b2..ec39fd6 100644
+index bcf26b2..420b45f 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -4,7 +4,7 @@ project('pfapack',
@@ -29,7 +19,7 @@ index bcf26b2..ec39fd6 100644
  
  # === Platform specific BLAS/LAPACK setup ===
  if host_machine.system() == 'darwin'
-@@ -29,10 +30,33 @@ elif host_machine.system() == 'windows'
+@@ -29,30 +30,89 @@ elif host_machine.system() == 'windows'
    # On Windows, find OpenBLAS which includes LAPACK
    openblas_lib = dependency('openblas', required: false)
    if not openblas_lib.found()
@@ -61,11 +51,38 @@ index bcf26b2..ec39fd6 100644
 +      required: false)
 +  endif
 +  if not openblas_lib.found()
-+    openblas_lib = c_compiler.find_library('libopenblas', required: true)
++    openblas_lib = c_compiler.find_library('libopenblas', required: false)
++  endif
++  if openblas_lib.found()
++    # OpenBLAS includes both BLAS and LAPACK
++    lapack_dep = declare_dependency(dependencies: [openblas_lib])
++    blas_dep = declare_dependency(dependencies: [openblas_lib])
++  else
++    # conda-forge's Windows packages provide BLAS/LAPACK import libraries
++    # even when an OpenBLAS import library is unavailable.
++    blas_dep = dependency('blas', required: false)
++    lapack_dep = dependency('lapack', required: false)
++    if not blas_dep.found() and openblas_libdir_opt != ''
++      blas_dep = c_compiler.find_library('blas',
++        dirs: [openblas_libdir_opt],
++        required: false)
++    endif
++    if not blas_dep.found()
++      blas_dep = c_compiler.find_library('blas', required: true)
++    endif
++    if not lapack_dep.found() and openblas_libdir_opt != ''
++      lapack_dep = c_compiler.find_library('lapack',
++        dirs: [openblas_libdir_opt],
++        required: false)
++    endif
++    if not lapack_dep.found()
++      lapack_dep = c_compiler.find_library('lapack', required: true)
++    endif
    endif
-   # OpenBLAS includes both BLAS and LAPACK
-   lapack_dep = declare_dependency(dependencies: [openblas_lib])
-@@ -41,18 +65,31 @@ else # Linux
+-  # OpenBLAS includes both BLAS and LAPACK
+-  lapack_dep = declare_dependency(dependencies: [openblas_lib])
+-  blas_dep = declare_dependency(dependencies: [openblas_lib])
+ else # Linux
    # Try multiple methods to find OpenBLAS
    openblas_dep = dependency('openblas', required: false)
    if not openblas_dep.found()
@@ -119,5 +136,3 @@ index b478f91..e85de6c 100644
 +  value: '',
 +  description: 'Directory where OpenBLAS can be found when autodetection fails',
 +)
--- 
-2.51.0
