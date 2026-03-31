@@ -34,8 +34,6 @@ requirements:
     - ninja
     - setuptools-scm
     - liblapack
-    - if: not win
-      then: libopenblas
     - libblas
   run:
     - python
