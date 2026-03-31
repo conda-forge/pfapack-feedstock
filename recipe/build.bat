@@ -1,5 +1,6 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
+set "SCRIPT_DIR=%~dp0"
 
 if defined FC (
   set "FC_EXE=%FC%"
@@ -13,13 +14,18 @@ if defined CC (
   set "CC_EXE=cl.exe"
 )
 
-for /f "delims=" %%I in ('"%PYTHON%" -c "import sysconfig; print(sysconfig.get_path(\"platlib\"))"') do set "SP_DIR=%%I"
+if not defined SP_DIR (
+  echo SP_DIR is not defined
+  exit /b 1
+)
 set "PKG_DIR=%SP_DIR%\pfapack"
 
 if not exist build mkdir build
 if not exist "%PKG_DIR%" mkdir "%PKG_DIR%"
 
 pushd build
+copy /Y "%SCRIPT_DIR%cpfapack.def" "cpfapack.def"
+if errorlevel 1 exit /b 1
 
 for %%F in (..\original_source\fortran\*.f) do (
   "%FC_EXE%" -c "%%F" -O2 -funderscoring -fms-runtime-lib=dll -I. -module-dir .
@@ -51,7 +57,7 @@ for %%F in (skpfa skpf10 skbpfa skbpf10 sktrf sktrd skbtrd) do (
 
 dir /b *.obj > objects.rsp
 "%FC_EXE%" @objects.rsp -o cpfapack.dll -funderscoring -fms-runtime-lib=dll -fuse-ld=lld ^
-  -Wl,/DLL -Wl,/DEF:..\recipe\cpfapack.def ^
+  -Wl,/DLL -Wl,/DEF:cpfapack.def ^
   "%PREFIX%\Library\lib\lapack.lib" "%PREFIX%\Library\lib\blas.lib"
 if errorlevel 1 exit /b 1
 
