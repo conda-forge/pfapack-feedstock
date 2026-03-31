@@ -23,7 +23,6 @@ if "%MINIFORGE_HOME:~-1%"=="\" set "MINIFORGE_HOME=%MINIFORGE_HOME:~0,-1%"
 call :start_group "Provisioning base env with pixi"
 echo Installing pixi
 powershell -NoProfile -ExecutionPolicy unrestricted -Command "iwr -useb https://pixi.sh/install.ps1 | iex"
->>>>>>> c2b85ea (MNT: Re-rendered with conda-build 25.7.0, conda-smithy 3.51.1, and conda-forge-pinning 2025.10.10.13.43.27)
 if !errorlevel! neq 0 exit /b !errorlevel!
 set "PATH=%USERPROFILE%\.pixi\bin;%PATH%"
 echo Installing environment
