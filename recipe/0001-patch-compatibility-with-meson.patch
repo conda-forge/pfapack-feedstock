@@ -4,36 +4,36 @@ Date: Mon, 13 Oct 2025 13:19:16 +0200
 Subject: [PATCH] Improve Meson compatibility on conda-forge
 
 ---
- meson.build       | 42 ++++++++++++++++++++++++++++++++++--------
- meson_options.txt |  4 ++++
- 2 files changed, 38 insertions(+), 8 deletions(-)
+ meson.build   | 44 ++++++++++++++++++++++++++++++++++----------
+ meson.options |  6 ++++++
+ 2 files changed, 40 insertions(+), 10 deletions(-)
 
 diff --git a/meson.build b/meson.build
-index bcf26b2..3d80da4 100644
+index bcf26b2..ec39fd6 100644
 --- a/meson.build
 +++ b/meson.build
 @@ -4,7 +4,7 @@ project('pfapack',
-     default_options: [
-       'buildtype=release',
-       'c_std=c99',
+   default_options: [
+     'buildtype=release',
+     'c_std=c99',
 -    'fortran_std=legacy',
 +    'fortran_std=none',
-     ],
-     version: run_command('pfapack/_version.py', check: true).stdout().strip(),
+   ],
+   version: run_command('pfapack/_version.py', check: true).stdout().strip(),
  )
-@@
--py = import('python').find_installation(pure: false)
-+py = import('python').find_installation(pure: false)
+@@ -17,6 +17,7 @@ m_dep = c_compiler.find_library('m', required: false)  # math library
+ 
+ # === Python setup ===
+ py = import('python').find_installation(pure: false)
 +openblas_libdir_opt = get_option('openblas_libdir')
-@@
- elif host_machine.system() == 'windows'
-     # On Windows, find OpenBLAS which includes LAPACK
-     openblas_lib = dependency('openblas', required: false)
-     if not openblas_lib.found()
+ 
+ # === Platform specific BLAS/LAPACK setup ===
+ if host_machine.system() == 'darwin'
+@@ -29,10 +30,33 @@ elif host_machine.system() == 'windows'
+   # On Windows, find OpenBLAS which includes LAPACK
+   openblas_lib = dependency('openblas', required: false)
+   if not openblas_lib.found()
 -    # Fallback to manual detection
--    openblas_lib = c_compiler.find_library('libopenblas',
--      dirs: ['C:/msys64/mingw64/lib'],
--      required: true)
 +    openblas_lib = c_compiler.find_library('libopenblas', required: false)
 +  endif
 +  if not openblas_lib.found()
@@ -50,8 +50,9 @@ index bcf26b2..3d80da4 100644
 +      required: false)
 +  endif
 +  if not openblas_lib.found()
-+    openblas_lib = c_compiler.find_library('libopenblas',
-+      dirs: ['C:/msys64/mingw64/lib'],
+     openblas_lib = c_compiler.find_library('libopenblas',
+       dirs: ['C:/msys64/mingw64/lib'],
+-      required: true)
 +      required: false)
 +  endif
 +  if not openblas_lib.found()
@@ -61,17 +62,16 @@ index bcf26b2..3d80da4 100644
 +  endif
 +  if not openblas_lib.found()
 +    openblas_lib = c_compiler.find_library('libopenblas', required: true)
-     endif
-     # OpenBLAS includes both BLAS and LAPACK
-     lapack_dep = declare_dependency(dependencies: [openblas_lib])
-@@ -15,10 +29,26 @@ elif host_machine.system() == 'windows'
- else # Linux
-     # Try multiple methods to find OpenBLAS
-     openblas_dep = dependency('openblas', required: false)
-     if not openblas_dep.found()
-           # Fallback to manual detection
--    openblas_dep = c_compiler.find_library('openblas', required: false)
--endif
+   endif
+   # OpenBLAS includes both BLAS and LAPACK
+   lapack_dep = declare_dependency(dependencies: [openblas_lib])
+@@ -41,18 +65,31 @@ else # Linux
+   # Try multiple methods to find OpenBLAS
+   openblas_dep = dependency('openblas', required: false)
+   if not openblas_dep.found()
+-      # Fallback to manual detection
+-      openblas_dep = c_compiler.find_library('openblas', required: false)
++    # Fallback to manual detection
 +    openblas_dep = c_compiler.find_library('openblas', required: false)
 +  endif
 +  if not openblas_dep.found()
@@ -86,20 +86,38 @@ index bcf26b2..3d80da4 100644
 +    openblas_dep = c_compiler.find_library('libopenblas',
 +      dirs: [openblas_libdir_opt],
 +      required: false)
-+  endif
-
-     if openblas_dep.found()
-           # OpenBLAS includes both BLAS and LAPACK
-           blas_dep = declare_dependency(dependencies: [openblas_dep])
-           lapack_dep = declare_dependency(dependencies: [openblas_dep])
-diff --git a/meson_options.txt b/meson_options.txt
-new file mode 100644
-index 0000000..931cd71
---- /dev/null
-+++ b/meson_options.txt
-@@
-+option('openblas_libdir', type: 'string', value: '',
-+  description: 'Directory where OpenBLAS can be found when autodetection fails')
+   endif
+ 
+   if openblas_dep.found()
+-      # OpenBLAS includes both BLAS and LAPACK
+-      blas_dep = declare_dependency(dependencies: [openblas_dep])
+-      lapack_dep = declare_dependency(dependencies: [openblas_dep])
++    # OpenBLAS includes both BLAS and LAPACK
++    blas_dep = declare_dependency(dependencies: [openblas_dep])
++    lapack_dep = declare_dependency(dependencies: [openblas_dep])
+   else
+-      # Fall back to separate BLAS and LAPACK
+-      blas_dep = c_compiler.find_library('blas', required: true)
+-      lapack_dep = c_compiler.find_library('lapack', required: true)
++    # Fall back to separate BLAS and LAPACK
++    blas_dep = c_compiler.find_library('blas', required: true)
++    lapack_dep = c_compiler.find_library('lapack', required: true)
+   endif
+ 
+   # Add rt library for clock_gettime
+diff --git a/meson.options b/meson.options
+index b478f91..e85de6c 100644
+--- a/meson.options
++++ b/meson.options
+@@ -3,3 +3,9 @@ option('build_tests',
+   value: 'enabled',
+   description: 'Build test executables',
+ )
++
++option('openblas_libdir',
++  type: 'string',
++  value: '',
++  description: 'Directory where OpenBLAS can be found when autodetection fails',
++)
 -- 
 2.51.0
-
