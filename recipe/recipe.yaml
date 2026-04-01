@@ -22,6 +22,10 @@ requirements:
     - if: not win
       then: ${{ stdlib("c") }}
     - ${{ compiler("fortran") }}
+    # On Windows we bypass Meson and use recipe/build.bat directly because
+    # Meson's llvm-flang support still runs into unresolved upstream issues,
+    # including probing flang with `--print-search-dirs`; track
+    # https://github.com/mesonbuild/meson/issues/12306
     - if: not win
       then: pkg-config
   host:

@@ -1,6 +1,9 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
 
+rem Windows bypasses Meson for now because Meson's llvm-flang support still has
+rem unresolved upstream issues; track https://github.com/mesonbuild/meson/issues/12306
+
 if defined FC (
   set "FC_EXE=%FC%"
 ) else (
