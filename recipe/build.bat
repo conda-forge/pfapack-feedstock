@@ -57,7 +57,7 @@ pushd build
 if errorlevel 1 exit /b 1
 
 for %%F in (..\original_source\fortran\*.f) do (
-  "%FC_EXE%" -c "%%F" -O2 -funderscoring -fms-runtime-lib=dll -I. -module-dir .
+  "%FC_EXE%" -c "%%F" -o "%%~nF.obj" -O2 -funderscoring -fms-runtime-lib=dll -I. -module-dir .
   if errorlevel 1 exit /b 1
 )
 
