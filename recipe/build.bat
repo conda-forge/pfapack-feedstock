@@ -1,6 +1,5 @@
 @echo off
 setlocal enableextensions enabledelayedexpansion
-set "SCRIPT_DIR=%~dp0"
 
 if defined FC (
   set "FC_EXE=%FC%"
@@ -24,7 +23,37 @@ if not exist build mkdir build
 if not exist "%PKG_DIR%" mkdir "%PKG_DIR%"
 
 pushd build
-copy /Y "%SCRIPT_DIR%cpfapack.def" "cpfapack.def"
+(
+  echo EXPORTS
+  echo skpfa_s
+  echo skpfa_d
+  echo skpfa_c
+  echo skpfa_z
+  echo skpf10_s
+  echo skpf10_d
+  echo skpf10_c
+  echo skpf10_z
+  echo skbpfa_s
+  echo skbpfa_d
+  echo skbpfa_c
+  echo skbpfa_z
+  echo skbpf10_s
+  echo skbpf10_d
+  echo skbpf10_c
+  echo skbpf10_z
+  echo sktrf_s
+  echo sktrf_d
+  echo sktrf_c
+  echo sktrf_z
+  echo sktrd_s
+  echo sktrd_d
+  echo sktrd_c
+  echo sktrd_z
+  echo skbtrd_s
+  echo skbtrd_d
+  echo skbtrd_c
+  echo skbtrd_z
+) > cpfapack.def
 if errorlevel 1 exit /b 1
 
 for %%F in (..\original_source\fortran\*.f) do (
