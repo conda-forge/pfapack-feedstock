@@ -48,11 +48,19 @@ requirements:
     - numpy
 
 tests:
-  - package_contents:
-      files:
-        - lib/python*/site-packages/pfapack/*cpfapack*.*
-      site_packages:
-        - pfapack.ctypes
+  - if: win
+    then:
+      package_contents:
+        files:
+          - Lib/site-packages/pfapack/*cpfapack*.*
+        site_packages:
+          - pfapack.ctypes
+    else:
+      package_contents:
+        files:
+          - lib/python*/site-packages/pfapack/*cpfapack*.*
+        site_packages:
+          - pfapack.ctypes
   - python:
       imports:
         - pfapack
