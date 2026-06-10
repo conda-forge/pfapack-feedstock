@@ -1,3 +1,5 @@
+c_compiler:
+- vs2022
 channel_sources:
 - conda-forge
 channel_targets:
@@ -6,6 +8,10 @@ fortran_compiler:
 - flang
 fortran_compiler_version:
 - '19'
+libblas:
+- 3.9.* *netlib
+liblapack:
+- 3.9.* *netlib
 pin_run_as_build:
   python:
     min_pin: x.x
@@ -14,6 +20,3 @@ python:
 - 3.12.* *_cpython
 target_platform:
 - win-64
-zip_keys:
-- - python
-  - channel_sources

@@ -1,0 +1,113 @@
+schema_version: 1
+
+context:
+  name: pfapack
+  version: 1.0.2
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  - url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
+    sha256: 43a91649eb9d21ddaaa0b302436e0b2c2fe162c42a5c02b747fa6bf3672fff39
+
+build:
+  number: 0
+  skip: match(python, "<3.10")
+
+requirements:
+  build:
+    - ${{ compiler('c') }}
+    - if: not win
+      then: ${{ stdlib("c") }}
+    - ${{ compiler("fortran") }}
+    # On Windows we bypass Meson and use recipe/build.bat directly because
+    # Meson's llvm-flang support still runs into unresolved upstream issues,
+    # including probing flang with `--print-search-dirs`; track
+    # https://github.com/mesonbuild/meson/issues/12306
+    - if: not win
+      then: pkg-config
+  host:
+    - python
+    - if: not win
+      then: pip
+    - if: not win
+      then: meson >=1.1
+    - if: not win
+      then: meson-python
+    - if: not win
+      then: ninja
+    - if: not win
+      then: setuptools-scm
+    - liblapack
+    - libblas
+  run:
+    - python
+    - scipy
+    - numpy
+
+tests:
+  - if: win
+    then:
+      package_contents:
+        files:
+          - Lib/site-packages/pfapack/*cpfapack*.*
+        site_packages:
+          - pfapack.ctypes
+    else:
+      package_contents:
+        files:
+          - lib/python*/site-packages/pfapack/*cpfapack*.*
+        site_packages:
+          - pfapack.ctypes
+  - python:
+      imports:
+        - pfapack
+        - pfapack.ctypes
+  - script:
+      interpreter: python
+      content: |
+        import numpy as np
+        from pfapack import pfaffian as pf
+        from pfapack.ctypes import pfaffian as cpfaffian
+
+        matrix = np.array(
+            [
+                [0.0, 1.0, 2.0, 3.0],
+                [-1.0, 0.0, 4.0, 5.0],
+                [-2.0, -4.0, 0.0, 6.0],
+                [-3.0, -5.0, -6.0, 0.0],
+            ],
+            dtype=np.float64,
+        )
+
+        expected = 8.0
+
+        assert np.allclose(pf.pfaffian(matrix), expected)
+        assert np.allclose(cpfaffian(matrix, uplo="L", method="P"), expected)
+        assert np.allclose(cpfaffian(matrix, uplo="L", method="H"), expected)
+        assert np.allclose(cpfaffian(matrix, uplo="L", method="P", avoid_overflow=True), expected)
+
+about:
+  license: MIT
+  license_file: LICENSE
+  summary: Efficient numerical computation of the Pfaffian for dense and banded skew-symmetric matrices
+  description: |
+    Computing the Pfaffian of a skew-symmetric matrix is a problem that arises in various fields of physics.
+    Both computing the Pfaffian and a related problem, computing the canonical form of a skew-symmetric matrix
+    under unitary congruence, can be solved easily once the skew-symmetric matrix has been reduced to
+    skew-symmetric tridiagonal form. We develop efficient numerical methods for computing this tridiagonal
+    form based on Gauss transformations, using a skew-symmetric, blocked form of the Parlett-Reid algorithm,
+    or based on unitary transformations, using block Householder transformations and Givens rotations,
+    that are applicable to dense and banded matrices, respectively. We also give a complete and fully
+    optimized implementation of these algorithms in Python.
+
+  homepage: https://github.com/basnijholt/pfapack
+  repository: https://github.com/basnijholt/pfapack
+  documentation: https://pfapack.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - basnijholt
+    - akhmerov
