@@ -49,7 +49,7 @@ tests:
     then:
       package_contents:
         files:
-          - Lib/site-packages/pfapack/*cpfapack*.*
+          - "**/site-packages/pfapack/*cpfapack*.dll"
         site_packages:
           - pfapack.ctypes
     else:
